@@ -30,7 +30,7 @@ export class TrainService {
     if (this.manager.removeDocument(lang, intent, agent))
       this.manager.addDocument(lang, intent, agent)
 
-    return this.manager.save(path.join(__dirname, 'nlp-models/model.nlp'), true);
+    return this.manager.save(path.join(__dirname, '../../../nlp-models/model.nlp'), true);
   }
 
   async addAnswer(lang: string, answer: string, agent: string) {
@@ -39,7 +39,7 @@ export class TrainService {
       agent,
       answer
     );
-    return this.manager.save(path.join(__dirname, 'nlp-models/model.nlp'), true);
+    return this.manager.save(path.join(__dirname, '../../../nlp-models/model.nlp'), true);
   }
 
   async trainNlp() {
