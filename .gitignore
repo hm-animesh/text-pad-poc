@@ -1,1 +1,3 @@
 sdkdemo/
+train-nlp-service/node_modules/*
+train-nlp-service/dist/*
