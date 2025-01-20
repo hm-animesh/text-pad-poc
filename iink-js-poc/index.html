@@ -1,0 +1,91 @@
+<html>
+
+<head>
+    <script src="node_modules/iink-ts/dist/iink.min.js"></script>
+    <link rel="stylesheet" href="node_modules/iink-ts/dist/iink.min.css">
+    <style>
+        #editor {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ccc;
+        }
+    </style>
+    <style>
+        #editor {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <button onclick="changeText()">Click Me</button> -->
+    <div id="toolbar">
+        <button id="undo">Undo</button>
+        <button id="redo" disabled>Redo</button>
+    </div>
+
+    <div id="editor" touch-action="none"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const editorElement = document.getElementById('editor');
+
+            const editor = new iink.Editor(editorElement, {
+                configuration: {
+                    server: {
+                        applicationKey: '0454874d-84b7-4114-8f13-70cc97a02644',
+                        hmacKey: '77409411-0ba1-425c-9c7d-bcfaefa40087'
+                    }
+                }
+            });
+
+            editor.initialize();
+            // Get undo and redo buttons
+            const undoButton = document.getElementById('undo');
+            const redoButton = document.getElementById('redo');
+            console.log('-0---------------', editor)
+            // Add event listeners to buttons
+            undoButton.addEventListener('click', () => {
+                console.log('-0---------------', editor)
+                editor.undo()
+            });
+            redoButton.addEventListener('click', () => editor.redo());
+
+            // Enable or disable buttons based on editor state
+            editorElement.addEventListener('changed', (event) => {
+                // undoButton.disabled = !editorElement.canUndo();
+                // redoButton.disabled = !editorElement.canRedo();
+
+                console.log('event---------===-----', event.target.innerText)
+            });
+            editorElement.addEventListener('exported', function (evt) {
+                console.log('evt-------------', evt)
+                var exports = evt.detail.exports;
+
+                if (evt.detail && evt.detail['application/vnd.myscript.jiix']) {
+                    const finalOutputText = evt.detail['application/vnd.myscript.jiix'];
+                    console.log('Final Output Text:', finalOutputText);
+                    // Do something with the finalOutputText (e.g., display or save it)
+                }
+
+
+
+                //    if (exports && exports['application/x-latex']) {
+                //      resultElement.innerHTML = '<span>' + exports['application/x-latex'] + '</span>';
+                //    } else {
+                //      resultElement.innerHTML = '';
+                //    }
+            });
+            // console.log("The DOM is fully loaded and parsed.");
+
+
+
+            editorElement.addEventListener('imported', function (evt) {
+                console.log('evt-----imp--------', evt)
+            });
+        });
+    </script>
+</body>
+
+</html>
