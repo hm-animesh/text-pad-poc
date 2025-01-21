@@ -15,11 +15,21 @@
             width: 100%;
             height: 100%;
         }
+
+        #textbox {
+            margin: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+        }
     </style>
 </head>
 
 <body>
     <!-- <button onclick="changeText()">Click Me</button> -->
+     <div> Suggestion
+    <div id=textbox></div>
+</div>
     <div id="toolbar">
         <button id="undo">Undo</button>
         <button id="redo" disabled>Redo</button>
@@ -28,6 +38,10 @@
     <div id="editor" touch-action="none"></div>
 
     <script>
+        const wrapper = document.querySelector('.smartguide-wrapper')
+
+
+
         document.addEventListener("DOMContentLoaded", function () {
             const editorElement = document.getElementById('editor');
 
@@ -51,38 +65,28 @@
                 editor.undo()
             });
             redoButton.addEventListener('click', () => editor.redo());
-
-            // Enable or disable buttons based on editor state
             editorElement.addEventListener('changed', (event) => {
-                // undoButton.disabled = !editorElement.canUndo();
-                // redoButton.disabled = !editorElement.canRedo();
-
-                console.log('event---------===-----', event.target.innerText)
             });
+
             editorElement.addEventListener('exported', function (evt) {
                 console.log('evt-------------', evt)
                 var exports = evt.detail.exports;
+                const textboxDiv = document.getElementById('textbox');
+
+                // Force text inside the div
+                // textboxDiv.textContent = evt.detail['application/vnd.myscript.jiix'].label;
 
                 if (evt.detail && evt.detail['application/vnd.myscript.jiix']) {
                     const finalOutputText = evt.detail['application/vnd.myscript.jiix'];
-                    console.log('Final Output Text:', finalOutputText);
-                    // Do something with the finalOutputText (e.g., display or save it)
+                    console.log('Final Output Text:', finalOutputText.label);
+                    fetch(`http://localhost:3000/train/answer?question=${finalOutputText.label}`)
+                        .then((response) => response.text())
+                        .then((data) => {
+                            textboxDiv.textContent = data && data
+                            console.log('===-------------===',data)
+                        })
+                        .catch((error) => console.error("Error:", error));
                 }
-
-
-
-                //    if (exports && exports['application/x-latex']) {
-                //      resultElement.innerHTML = '<span>' + exports['application/x-latex'] + '</span>';
-                //    } else {
-                //      resultElement.innerHTML = '';
-                //    }
-            });
-            // console.log("The DOM is fully loaded and parsed.");
-
-
-
-            editorElement.addEventListener('imported', function (evt) {
-                console.log('evt-----imp--------', evt)
             });
         });
     </script>
